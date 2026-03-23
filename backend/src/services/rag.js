@@ -131,3 +131,22 @@ export const mongoTextSearch = async (query, userProfile = {}, limit = 10) => {
     return []
   }
 }
+
+const buildRichQuery = (query, profile) => {
+  const parts = [query]
+  if (profile.occupation) parts.push(profile.occupation)
+  if (profile.state) parts.push(profile.state)
+  if (profile.age) {
+    if (profile.age < 25) parts.push('youth student education scholarship')
+    if (profile.age > 60) parts.push('elderly pension senior citizen')
+  }
+  if (profile.gender === 'female') parts.push('women girl scheme mahila')
+  if (profile.is_disabled) parts.push('disability divyang handicapped')
+  if (profile.is_widow) parts.push('widow pension')
+  if (profile.caste === 'sc') parts.push('scheduled caste SC Dalit')
+  if (profile.caste === 'st') parts.push('scheduled tribe ST tribal adivasi')
+  if (profile.caste === 'obc') parts.push('other backward class OBC')
+  if (profile.income_annual && profile.income_annual < 100000) parts.push('BPL below poverty line poor')
+  if (profile.land_acres) parts.push('farmer kisan agriculture')
+  return parts.join(' ')
+}
